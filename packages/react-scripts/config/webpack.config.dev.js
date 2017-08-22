@@ -201,7 +201,9 @@ module.exports = {
           // Process JS with Babel.
           {
             test: /\.(js|jsx)$/,
-            include: paths.appSrc,
+            include: [
+              paths.appSrc,
+            ],
             loader: require.resolve('babel-loader'),
             options: {
               // @remove-on-eject-begin
@@ -222,6 +224,17 @@ module.exports = {
               // directory for faster rebuilds.
               cacheDirectory: true,
             },
+          },
+          {
+            test: /\.ya?ml$/,
+            use: [
+              {
+                loader: 'json-loader'
+              },
+              {
+                loader: 'yaml-loader'
+              }
+            ]
           },
           // "postcss" loader applies autoprefixer to our CSS.
           // "css" loader resolves paths in CSS and adds assets as dependencies.
@@ -259,7 +272,7 @@ module.exports = {
                   modules: true,
                   camelCase: true,
                   autoprefixer: false,
-                  localIdentName: '[name]__[local]___[hash:base64:5]',
+                  localIdentName: '[name]__[local]',
                 },
               },
               {

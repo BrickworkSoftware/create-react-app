@@ -64,7 +64,8 @@
     "webpack-bundle-analyzer": "^2.8.2",
     "webpack-dev-server": "2.4.5",
     "webpack-manifest-plugin": "1.1.0",
-    "whatwg-fetch": "2.0.3"
+    "whatwg-fetch": "2.0.3",
+    "yaml-loader": "^0.5.0"
   },
   "devDependencies": {
     "react": "^15.5.4",

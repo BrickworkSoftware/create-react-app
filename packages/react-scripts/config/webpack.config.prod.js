@@ -77,8 +77,8 @@ module.exports = {
     // Generated JS file names (with nested folders).
     // There will be one main bundle, and one file per asynchronous chunk.
     // We don't currently advertise code splitting but Webpack supports it.
-    filename: 'static/js/[name].[chunkhash:8].js',
-    chunkFilename: 'static/js/[name].[chunkhash:8].chunk.js',
+    filename: 'static/js/[name].js',
+    chunkFilename: 'static/js/[name].chunk.js',
     jsonpFunction: 'brickworkJsonpFunction',
     // We inferred the "public path" (such as / or /my-project) from homepage.
     publicPath: publicPath,
@@ -282,7 +282,7 @@ module.exports = {
                   camelCase: true,
                   autoprefixer: false,
                   sourceMap: true,
-                  localIdentName: '[name]__[local]___[hash:base64:5]',
+                  localIdentName: '[name]__[local]',
                 },
               },
               {

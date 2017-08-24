@@ -16,6 +16,7 @@ const args = process.argv.slice(3);
 
 switch (script) {
   case 'build':
+  case 'library':
   case 'eject':
   case 'start':
   case 'test': {

@@ -85,7 +85,7 @@ module.exports = {
     // Point sourcemap entries to original disk location (format as URL on Windows)
     devtoolModuleFilenameTemplate: info =>
       path
-        .relative(paths.appSrc, info.absoluteResourcePath)
+        .relative(paths.app, info.absoluteResourcePath)
         .replace(/\\/g, '/'),
   },
   resolve: {
@@ -93,7 +93,12 @@ module.exports = {
     // We placed these paths second because we want `node_modules` to "win"
     // if there are any conflicts. This matches Node resolution mechanism.
     // https://github.com/facebookincubator/create-react-app/issues/253
-    modules: ['node_modules', paths.appNodeModules].concat(
+    modules: [
+      paths.app,
+      // paths.appNodeModules,
+      path.resolve(paths.asiago),
+      'node_modules',
+    ].concat(
       // It is guaranteed to exist because we tweak it in `env.js`
       process.env.NODE_PATH.split(path.delimiter).filter(Boolean)
     ),
@@ -110,7 +115,6 @@ module.exports = {
       // It usually still works on npm 3 without this but it would be
       // unfortunate to rely on, as react-scripts could be symlinked,
       // and thus babel-runtime might not be resolvable from the source.
-      'src': paths.appSrc,
       'babel-runtime': path.dirname(
         require.resolve('babel-runtime/package.json')
       ),
@@ -125,7 +129,7 @@ module.exports = {
       // To fix this, we prevent you from importing files out of src/ -- if you'd like to,
       // please link the files into your node_modules/ and let module-resolution kick in.
       // Make sure your source files are compiled, as they will not be processed in any way.
-      new ModuleScopePlugin(paths.appSrc),
+      new ModuleScopePlugin(paths.app),
     ],
   },
   module: {
@@ -162,7 +166,7 @@ module.exports = {
             loader: require.resolve('eslint-loader'),
           },
         ],
-        include: paths.appSrc,
+        include: paths.app,
       },
       {
         // "oneOf" will traverse all following loaders until one will
@@ -182,7 +186,10 @@ module.exports = {
           // Process JS with Babel.
           {
             test: /\.(js|jsx)$/,
-            include: paths.appSrc,
+            include: [
+              paths.app,
+              path.resolve(paths.asiago),
+            ],
             loader: require.resolve('babel-loader'),
             options: {
               // @remove-on-eject-begin
@@ -191,11 +198,6 @@ module.exports = {
               // @remove-on-eject-end
               compact: true,
               plugins: [
-                // [require.resolve('babel-plugin-react-intl'), {
-                //   messagesDir: './build/messages/',
-                //   // enforceDescriptions: true,
-                //   extractSourceLocation: true,
-                // }],
                 'transform-function-bind',
                 ['transform-decorators-legacy']
               ],

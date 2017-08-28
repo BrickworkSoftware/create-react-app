@@ -23,6 +23,7 @@ const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const paths = require('./paths');
 const getClientEnvironment = require('./env');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const nodeExternals = require('webpack-node-externals');
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -56,7 +57,7 @@ const extractTextPluginOptions = shouldUseRelativeAssetPaths
   : {};
 
 // Define what the compiled file is called (normally 'brickwork' but docs project overwrites it)
-const mainEntry = process.env['MAIN_ENTRY'] || 'brickwork';
+const mainEntry = 'universal';
 
 // This is the production configuration.
 // It compiles slowly and is focused on producing a fast and minimal bundle.
@@ -64,12 +65,14 @@ const mainEntry = process.env['MAIN_ENTRY'] || 'brickwork';
 module.exports = {
   // Don't attempt to continue if there are any errors.
   bail: true,
+  target: 'node',
+  externals: [nodeExternals()],
   // We generate sourcemaps in production. This is slow but gives good results.
   // You can exclude the *.map files from the build during deployment.
   devtool: 'source-map',
   // In production, we only want to load the polyfills and the app code.
   entry: {
-    [mainEntry]: [require.resolve('./polyfills'), paths.appIndexJs]
+    [mainEntry]: [require.resolve('./polyfills'), paths.libraryIndexJs]
   },
   output: {
     // The build folder.
@@ -85,7 +88,7 @@ module.exports = {
     // Point sourcemap entries to original disk location (format as URL on Windows)
     devtoolModuleFilenameTemplate: info =>
       path
-        .relative(paths.appSrc, info.absoluteResourcePath)
+        .relative(paths.app, info.absoluteResourcePath)
         .replace(/\\/g, '/'),
   },
   resolve: {
@@ -110,7 +113,7 @@ module.exports = {
       // It usually still works on npm 3 without this but it would be
       // unfortunate to rely on, as react-scripts could be symlinked,
       // and thus babel-runtime might not be resolvable from the source.
-      'src': paths.appSrc,
+      'src': paths.app,
       'babel-runtime': path.dirname(
         require.resolve('babel-runtime/package.json')
       ),
@@ -125,7 +128,7 @@ module.exports = {
       // To fix this, we prevent you from importing files out of src/ -- if you'd like to,
       // please link the files into your node_modules/ and let module-resolution kick in.
       // Make sure your source files are compiled, as they will not be processed in any way.
-      new ModuleScopePlugin(paths.appSrc),
+      new ModuleScopePlugin(paths.app),
     ],
   },
   module: {
@@ -162,7 +165,7 @@ module.exports = {
             loader: require.resolve('eslint-loader'),
           },
         ],
-        include: paths.appSrc,
+        include: paths.app,
       },
       {
         // "oneOf" will traverse all following loaders until one will
@@ -182,7 +185,7 @@ module.exports = {
           // Process JS with Babel.
           {
             test: /\.(js|jsx)$/,
-            include: paths.appSrc,
+            include: paths.app,
             loader: require.resolve('babel-loader'),
             options: {
               // @remove-on-eject-begin
